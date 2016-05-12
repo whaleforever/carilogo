@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block main-body %}
+<div id="top-menu">
+    <div class="container">
+        <div class="title-logo">
+            <a href="" class="navbar-brand">
+                <img src="{% static 'images/logo-web.svg' %}" alt="{{title}}"></a>
+        </div>
+        <form action="">
+            <div class="form-group is-empty is-fileinput">
+                <input type="file" multiple="" id="inputFile3">
+                <a class="btn btn-raised btn-danger" href="#"><i class="material-icons">file_upload</i> Upload sample gambar </a>
+                <span class="material-input"></span></div>
+        </form>
+
+    </div>
+</div>
+<div id="gallery">
+</div>
+{% endblock main-body %}

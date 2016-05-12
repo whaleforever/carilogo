@@ -1,4 +1,7 @@
 *.py[cod]
 *.sqlite3
 
-frontsearch
+media
+static/bower_components
+static/stylesheets
+static/.sass-cache

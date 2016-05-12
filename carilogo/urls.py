@@ -17,21 +17,16 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic.base import RedirectView, TemplateView
-from core.views import AngularRedirectView
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include('api.urls')),
-    url(r'^(node_modules|stylesheets|systemjs\.config\.js|app|images|sample-images)/(?P<long_url>.*)$',
-        AngularRedirectView.as_view()),
-    url(r'^$', TemplateView.as_view(template_name='base.html'))
+    url(r'^', include('search.urls') )
 ]
 
 
 if settings.DEBUG:
     from django.conf.urls.static import static
-    urlpatterns += static(settings.ANGULAR_URL,
-                          document_root=settings.ANGULAR_ROOT)
     urlpatterns += static(settings.STATIC_URL,
                           document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL,
