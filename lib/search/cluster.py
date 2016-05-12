@@ -31,7 +31,7 @@ def read_csv_file(file_location):
     return data
 
 
-def assign_cluster(file_location, file_out="clustered.csv", model="kmeans.model"):
+def assign_cluster(file_location, file_out="clustered.csv", model="kmeans.model", last_filename=False):
     data = read_csv_file(file_location)
     jvm.start()
     # load clusters
@@ -42,12 +42,22 @@ def assign_cluster(file_location, file_out="clustered.csv", model="kmeans.model"
     with open(file_out, 'w') as output:
         for index, attrs in enumerate(data):
             tmp = []
-            inst = Instance.create_instance(attrs[1:])
+            if last_filename:
+                inst = Instance.create_instance(attrs[:-2])
+            else:
+                inst = Instance.create_instance(attrs[1:])
+
             pred = clusterer.cluster_instance(inst)
             dist = clusterer.distribution_for_instance(inst)
-            tmp.append(attrs[0])
-            tmp.append(pred)
-            tmp.extend(attrs[1:])
+
+            if last_filename :
+                tmp.append(attrs[-1])
+                tmp.append(pred)
+                tmp.extend(attrs[:-2])
+            else:
+                tmp.append(attrs[0])
+                tmp.append(pred)
+                tmp.extend(attrs[1:])
 
             print(str(index + 1) + ": label index=" +
                   str(pred) + ", class distribution=" + str(dist))
@@ -80,9 +90,11 @@ if __name__ == "__main__":
     ap.set_defaults(create_cluster=False)
     ap.add_argument("-o", "--output", required=False,
                     default="kmeans.model", help="output model")
+    ap.add_argument('--last-filename', action="store_true", dest="last_filename")
+    ap.set_defaults(last_filename=False)
     args = ap.parse_args()
 
     if args.create_cluster:
         create_cluster_model(args.file_location, model=args.output)
     else :
-        assign_cluster(args.file_location, model=args.output)
+        assign_cluster(args.file_location, model=args.output, last_filename=args.last_filename)
