@@ -6,10 +6,14 @@ from weka.clusterers import Clusterer
 from shutil import copyfile
 
 
-def create_cluster_model(arff_file, n=10, model="out.model"):
+def create_cluster_model(arff_file, n=10, loader_type="csv", model="kmeans.model"):
     """ create cluster model """
     jvm.start()
-    loader = converters.Loader(classname="weka.core.converters.ArffLoader")
+    if loader_type == "csv":
+        loader = converters.Loader(classname="weka.core.converters.CSVLoader")
+    else :
+        loader = conventers.Loader(classname="weka.core.converters.ArffLoader")
+
     data = loader.load_file(arff_file)
     clusterer = Clusterer(
         classname="weka.clusterers.SimpleKMeans", options=["-N", str(n)])
@@ -72,9 +76,13 @@ def query_instance(attributes, model="weka_kmeans.model"):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument('file_location', help="arff location")
+    ap.add_argument('--cluster', action="store_true", dest="create_cluster")
+    ap.set_defaults(create_cluster=False)
     ap.add_argument("-o", "--output", required=False,
-                    default="out.model", help="output model")
+                    default="kmeans.model", help="output model")
     args = ap.parse_args()
 
-    # create_cluster_model(args.file_location, model=args.output)
-    assign_cluster(args.file_location, model='weka_kmeans.model')
+    if args.create_cluster:
+        create_cluster_model(args.file_location, model=args.output)
+    else :
+        assign_cluster(args.file_location, model='kmeans.model')

@@ -6,7 +6,7 @@ import re
 from fba.preprocess import Preprocess
 
 
-def extract_feature(db_dir, output=None, bins=(8,12,3), training=False):
+def extract_feature(db_dir, output=None, bins=(8,12,3), use_header=False, training=False):
     # initialize the color descriptor
     cd = Preprocess(bins)
     content = ""
@@ -15,12 +15,13 @@ def extract_feature(db_dir, output=None, bins=(8,12,3), training=False):
     labels = ['african', 'beach', 'building', 'bus', 'dinosaur', 'elephant',
                    'flower', 'horse', 'mountain', 'food']
     # use glob to grab the image paths and loop over them
-    for imagePath in glob.glob(db_dir + "/*"):
+    for imagePath in glob.glob(db_dir + "/*.jpg"):
         # extract the image ID (i.e. the unique filename) from the image
         # path and load the image itself
         imageID = imagePath[imagePath.rfind("/") + 1:]
         image = cv2.imread(imagePath)
 
+        print imagePath, imageID
         # describe the image
         features = cd.describe(image)
         # write the features to file
@@ -37,17 +38,17 @@ def extract_feature(db_dir, output=None, bins=(8,12,3), training=False):
         else:
             content +="\"%s\",%s\n" % (imageID, ",".join(features))
 
-    if training :
+    if use_header :
         header = "label,%s\n"%','.join([str(a) for a in range(feature_length)])
         output.write(header)
     output.write(content)
 
 
-def indexing(db_dir, using=None, filename='file_index.csv'):
+def indexing(db_dir, using=None, filename='file_index.csv', header=False):
     if using == "file":
         # open the output index file for writing
         output = open(filename, "w")
-        extract_feature(db_dir, output, bins=(8,8,8))
+        extract_feature(db_dir, output, bins=(8,8,8), use_header=header)
         # close the index file
         output.close()
     else:
@@ -61,6 +62,10 @@ if __name__ == "__main__":
                     help="Path to the directory that contains the images to be indexed")
     ap.add_argument("-i", "--index", required=True,
                     help="Path to where the computed index will be stored")
-    ap.add_argument("-t", "--training", default=False)
+    ap.add_argument("-t", "--training", dest='training', action='store_true')
+    ap.set_defaults(training=False)
+    ap.add_argument("--header", dest='header', action='store_true')
+    ap.set_defaults(header=False)
+
     args = vars(ap.parse_args())
-    indexing(args['dataset'], using="file", filename=args['index'])
+    indexing(args['dataset'], using="file", filename=args['index'],header=args['header'])

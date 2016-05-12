@@ -1,5 +1,7 @@
 *.py[cod]
 *.sqlite3
+*.csv
+*.model
 
 media
 static/bower_components
