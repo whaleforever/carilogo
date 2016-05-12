@@ -38,11 +38,10 @@ if __name__ == "__main__":
     if args["cluster"]:
         searcher = Searcher(args["index"], use_cluster = True)
         cluster_group = cluster.query_instance(features)
-        results  = searcher.search(features,cluster_group=cluster_group)
+        results  = searcher.search(features,cluster_group=cluster_group, limit=20)
     else:
-
         # perform the search
-        searcher = Searcher(args["index"])
+        searcher = Searcher(args["index"],limit)
         results = searcher.search(features)
 
     # display the query

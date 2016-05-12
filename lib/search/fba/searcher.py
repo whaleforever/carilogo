@@ -47,4 +47,6 @@ class Searcher:
         for k,v in results:
             print v,k
         print("--- %s seconds ---" % (time.time() - start_time))
+        if limit is None:
+            return results
         return results[:limit]

@@ -55,7 +55,7 @@ def assign_cluster(file_location, file_out="clustered.csv", model="kmeans.model"
     jvm.stop()
 
 
-def query_instance(attributes, model="weka_kmeans.model"):
+def query_instance(attributes, model="kmeans.model"):
     """
         get the cluster for defined attributes
         :params attributes: array or list
