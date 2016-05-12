@@ -44,9 +44,12 @@ class Searcher:
                     d = self.chi2_distance(features, queryFeatures)
                     results[row[0]] = d
         results = sorted([(v, k) for (k, v) in results.items()])
-        for k,v in results:
-            print v,k
-        print("--- %s seconds ---" % (time.time() - start_time))
+        seconds = time.time() - start_time
+
+        # print result
+        # for k,v in results:
+        #     print v,k
+        # print("--- %s seconds ---" % (seconds))
         if limit is None:
-            return results
-        return results[:limit]
+            return seconds, results
+        return seconds, results[:limit]

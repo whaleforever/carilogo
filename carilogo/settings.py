@@ -130,10 +130,10 @@ ANGULAR_URL = '/a/'
 ANGULAR_ROOT = 'frontsearch/'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'assets/'
+STATIC_ROOT = os.path.join(BASE_DIR,'assets')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-MEDIA_ROOT = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
