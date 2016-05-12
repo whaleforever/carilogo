@@ -21,7 +21,7 @@ from django.views.generic.base import RedirectView, TemplateView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('search.urls') )
+    url(r'^', include('search.urls', namespace='search') )
 ]
 
 
