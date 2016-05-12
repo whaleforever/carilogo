@@ -21,6 +21,10 @@
 </head>
 <body>
   {% block main-body %}{% endblock main-body %}
+
+  <script src="{% static 'bower_components/jquery/dist/jquery.js' %}" charset="utf-8"></script>
+  <script src="{% static 'bower_components/bootstrap-material-design/dist/js/material.js' %}" charset="utf-8"></script>
+  <script src="{% static 'bower_components/bootstrap-material-design/dist/js/ripples.js' %}" charset="utf-8"></script>
   {% block extra-scripts %}{% endblock extra-scripts %}
 </body>
 </html>
