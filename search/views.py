@@ -42,6 +42,7 @@ class SearchView(FormView):
                         print "got the name"
                         break
             features = query[:-2]
+            distance_method="braycurtis"
         else:
             CLUSTERED_MODEL = "sorted_kmeans.model"
             CLUSTERED_INDEX = "sorted_clustered.csv"
@@ -61,11 +62,12 @@ class SearchView(FormView):
             # load the query image and describe it
             query = cv2.imread(tmp_file)
             features = cd.describe(query)
+            distance_method = "chi"
 
         searcher = Searcher(CLUSTERED_INDEX, use_cluster=True)
         cluster_group = cluster.query_instance(features, model=CLUSTERED_MODEL)
         seconds, images = searcher.search(
-            features, cluster_group=cluster_group, limit=None)
+            features, distance_method=distance_method, cluster_group=cluster_group, limit=None)
 
         result = {
             'seconds': seconds,
