@@ -1,18 +1,10 @@
 import argparse
 import os
 import cv2
-import connector
-import settings
 import cluster
 from shutil import copyfile
 from fba.preprocess import Preprocess
 from fba.searcher import Searcher
-
-
-def create_database():
-    if not os.path.isfile(settings.DATABASE):
-        connector.initial(table="image", feature="text",
-                          cluster="int", weka_id="int", image_path="text")
 
 
 def initialize():
@@ -64,7 +56,7 @@ if __name__ == "__main__":
         print "Total Results",len(results)
     # loop over the results
     for (score, resultID) in results:
-        copyfile(args["result_path"] + "/" + resultID, 'result/' + resultID)
+        # copyfile(args["result_path"] + "/" + resultID, 'result/' + resultID)
         # load the result image and display it
         result = cv2.imread(args["result_path"] + "/" + resultID)
         cv2.namedWindow("Result", cv2.WINDOW_NORMAL)
