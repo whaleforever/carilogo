@@ -42,7 +42,7 @@ class SearchView(FormView):
         seconds, images  = searcher.search(features,cluster_group=cluster_group)
 
         result = {
-            'second': seconds,
-            'images': [ image[1] for image in images ]
+            'seconds': seconds,
+            'images': [ "%s/%s/%s"%(settings.MEDIA_URL,'sample',image[1]) for image in images ]
         }
-        return JsonResponse(result)
+        return JsonResponse(result, safe=False)

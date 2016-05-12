@@ -1,8 +1,4 @@
-{% extends 'base.html' %}
-{% load staticfiles %}
-
-
-{% block main-body %}
+{% extends 'base.html' %} {% load staticfiles %} {% block main-body %}
 <div id="top-menu">
     <div class="container">
         <div class="title-logo">
@@ -12,65 +8,65 @@
         <form enctype="multipart/form-data" id="upload-file" action="{% url 'search:index' %}" method="post" class="dropzone">
             {% csrf_token %}
             <!-- <div id="upload-file" class="form-group is-empty is-fileinput"> -->
-                <!-- <input type="file" multiple="" id="inputFile3">
+            <!-- <input type="file" multiple="" id="inputFile3">
                 <a class="btn btn-raised btn-danger" href="#"><i class="material-icons">file_upload</i> Upload sample gambar </a>
                 <span class="material-input"></span></div> -->
         </form>
-
     </div>
 </div>
-<div id="gallery">
+
+<div id="gallery" class="container-fluid">
+    <p class="seconds"></p>
+    <div class="row">
+        <div class="col-md-12"></div>
+    </div>
 </div>
 {% endblock main-body %}
 
+
 {% block extra-scripts %}
-  <script src="{% static 'bower_components/dropzone/dist/dropzone.js' %}" charset="utf-8"></script>
-  {% verbatim %}
-  <script id="image-template" type="text/x-handlebars-template">
-    <div class="col-md-2">
-      <div class="thumbnail">
-        <a href="{{full}}" class="">
-          <img src="{{show}}" alt="" class="img-responsive"/>
-        </a>
-      	<div class="caption">
-      	  <a href="{{del}}" class="btn btn-danger" styel="text-align:center"><i class="fa fa-trash"></i></a>
-      	</div>
-      </div>
-    </div>
-  </script>
-  {% endverbatim %}
+<script src="{% static 'bower_components/dropzone/dist/dropzone.js' %}" charset="utf-8"></script>
 
-  <script>
+{% verbatim %}
+<script id="image-template" type="text/x-handlebars-template">
+  <div class="image-frame">
+    <img class="img-responsive" src="{{ image_path }}" alt="" style="max-width:100px">
+  </div>
+</script>
+{% endverbatim %}
+
+<script>
     // add dropzone
-  $(function(){
-      'use strict';
-      var source = $("#image-template").html();
-      var template = Handlebars.compile(source);
+    $(function() {
+        'use strict';
+        var source = $("#image-template").html();
+        var template = Handlebars.compile(source);
 
-      Dropzone.options.uploadFile = {
-        parallelUploads: 100,
-        paramName:'file',
-        maxFiles: 1,
-        acceptedFiles: 'image/*',
-        // success: function(event,response){
-        //   console.log('success');
-        //   var res = JSON.parse(response);
-        //   console.log(res[0].fields,res[0])
-        //   var context = {full: "/shop/{{shop.slug}}/gallery/f/"+res[0].pk,
-        //                  show: "/media/"+res[0].fields.image+'.80x60_q85_crop.jpg',
-        //                  del: "/shop/{{shop.slug}}/gallery/d/"+res[0].pk};
-        //   var render = template(context);
-        //   $('#gallery-list').append(render);
-        // },
-        // error: function(file, errorMessage, xhr){
-        //   alert(errorMessage);
-        //   this.removeFile(file);
-        // },
-        // success: function(file){
-        //   this.removeAllFiles();
-        //   location.reload();
-        // }
-      }
+        Dropzone.options.uploadFile = {
+            parallelUploads: 100,
+            paramName: 'file',
+            maxFiles: 1,
+            acceptedFiles: 'image/*',
+            success: function(event, response) {
+                var res = response;
+                console.log(res)
+
+                $("#gallery .seconds").text(res.seconds)
+                for (var i = 0; i < res.images.length; i++) {
+                  var context = { image_path: res.images[i] };
+                  var render = template(context);
+                  $('#gallery .col-md-12').append(render);
+                }
+            },
+            // error: function(file, errorMessage, xhr){
+            //   alert(errorMessage);
+            //   this.removeFile(file);
+            // },
+            // success: function(file){
+            //   this.removeAllFiles();
+            //   location.reload();
+            // }
+        }
     });
-  </script>
+</script>
 {% endblock extra-scripts %}
