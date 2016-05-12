@@ -12,6 +12,9 @@ from lib.search.fba.preprocess import Preprocess
 from lib.search import cluster
 from lib.tools import make_sure_path_exists, handle_uploaded_file
 
+CLUSTERED_MODEL = "sorted_kmeans.model"
+CLUSTERED_INDEX = "sorted_clustered.csv"
+IMAGE_FOLDER = "sorted"
 
 class SearchView(FormView):
     form_class = SearchForm
@@ -28,21 +31,21 @@ class SearchView(FormView):
         #TODO: will become problem when multiuser access the same page
         handle_uploaded_file(image_file, tmp_file)
 
-        # initilalize index
-        searcher = Searcher("file_index.csv", use_cluster = True)
+        # # initilalize index
+        # searcher = Searcher("file_index.csv", use_cluster = True)
+
         # initialize the image descriptor
         cd = Preprocess((8, 8, 8))
-
         # load the query image and describe it
         query = cv2.imread(tmp_file)
         features = cd.describe(query)
 
-        searcher = Searcher("clustered.csv", use_cluster = True)
-        cluster_group = cluster.query_instance(features)
-        seconds, images  = searcher.search(features,cluster_group=cluster_group)
+        searcher = Searcher(CLUSTERED_INDEX, use_cluster = True)
+        cluster_group = cluster.query_instance(features, model=CLUSTERED_MODEL)
+        seconds, images  = searcher.search(features,cluster_group=cluster_group, limit=None)
 
         result = {
             'seconds': seconds,
-            'images': [ "%s/%s/%s"%(settings.MEDIA_URL,'sample',image[1]) for image in images ]
+            'images': [ "%s/%s/%s"%(settings.MEDIA_URL,IMAGE_FOLDER,image[1]) for image in images ]
         }
         return JsonResponse(result, safe=False)

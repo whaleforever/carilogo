@@ -85,4 +85,4 @@ if __name__ == "__main__":
     if args.create_cluster:
         create_cluster_model(args.file_location, model=args.output)
     else :
-        assign_cluster(args.file_location, model='kmeans.model')
+        assign_cluster(args.file_location, model=args.output)
