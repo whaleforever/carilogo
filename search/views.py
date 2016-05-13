@@ -2,6 +2,8 @@ import json
 import cv2
 import os
 import csv
+
+from weka.core import jvm
 from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
 from django.conf import settings
@@ -19,13 +21,14 @@ class SearchView(FormView):
     template_name = "search/index.html"
 
     def post(self, request, *args, **kwargs):
-
+        # import pdb; pdb.set_trace()
         image_file = request.FILES['file']
 
-        try:
-            use_cedd = int(request.POST.get('use_cedd', 0))
-        except ValueError:
-            use_cedd = 0
+        use_cedd = request.POST.get('use_cedd')
+        # try:
+        #     use_cedd = request.POST.get('use_cedd', 0))
+        # except ValueError:
+        #     use_cedd = 0
 
         if use_cedd:
             RAW_INDEX = "cedd_beverages.csv"
@@ -64,11 +67,15 @@ class SearchView(FormView):
             features = cd.describe(query)
             distance_method = "chi"
 
+        print CLUSTERED_INDEX, CLUSTERED_MODEL
         searcher = Searcher(CLUSTERED_INDEX, use_cluster=True)
         cluster_group = cluster.query_instance(features, model=CLUSTERED_MODEL)
         seconds, images = searcher.search(
             features, distance_method=distance_method, cluster_group=cluster_group, limit=None)
 
+        # if jvm.started:
+        #     jvm.javabridge.detach()
+        #     jvm.stop()
         result = {
             'seconds': seconds,
             'images': ["%s/%s/%s" % (settings.MEDIA_URL, IMAGE_FOLDER, image[1]) for image in images]

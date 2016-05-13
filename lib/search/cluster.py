@@ -5,10 +5,13 @@ from weka.core.dataset import Instance
 from weka.clusterers import Clusterer
 from shutil import copyfile
 
+def check_jvm():
+    if not jvm.started:
+        jvm.start(max_heap_size="512m")
 
 def create_cluster_model(arff_file, n=10, loader_type="csv", model="kmeans.model"):
     """ create cluster model """
-    jvm.start()
+    check_jvm()
     if loader_type == "csv":
         loader = converters.Loader(classname="weka.core.converters.CSVLoader")
     else :
@@ -19,7 +22,7 @@ def create_cluster_model(arff_file, n=10, loader_type="csv", model="kmeans.model
         classname="weka.clusterers.SimpleKMeans", options=["-N", str(n)])
     clusterer.build_clusterer(data)
     serialization.write(model, clusterer)
-    jvm.stop()
+
 
 
 def read_csv_file(file_location):
@@ -33,7 +36,7 @@ def read_csv_file(file_location):
 
 def assign_cluster(file_location, file_out="clustered.csv", model="kmeans.model", last_filename=False):
     data = read_csv_file(file_location)
-    jvm.start()
+    check_jvm()
     # load clusters
     obj = serialization.read(model)
     clusterer = Clusterer(jobject=obj)
@@ -62,7 +65,6 @@ def assign_cluster(file_location, file_out="clustered.csv", model="kmeans.model"
             print(str(index + 1) + ": label index=" +
                   str(pred) + ", class distribution=" + str(dist))
             output.write('%s\n'%(','.join(map(str,tmp)) ))
-    jvm.stop()
 
 
 def query_instance(attributes, model="kmeans.model"):
@@ -71,7 +73,7 @@ def query_instance(attributes, model="kmeans.model"):
         :params attributes: array or list
         :returns: cluster id
     """
-    jvm.start()
+    check_jvm()
     # create instance
     inst = Instance.create_instance(attributes)
     # load model
@@ -79,7 +81,7 @@ def query_instance(attributes, model="kmeans.model"):
     # load cluster and get the cluster_id
     cluster = Clusterer(jobject=obj)
     cluster_id = cluster.cluster_instance(inst)
-    jvm.stop()
+
     return cluster_id
 
 

@@ -7,11 +7,17 @@
         </div>
         <form enctype="multipart/form-data" id="upload-file" action="{% url 'search:index' %}" method="post" class="dropzone">
             {% csrf_token %}
-            <input type="hidden" value="1" name="use_cedd">
+            <!-- <input type="hidden" value="1" name="use_cedd"> -->
             <!-- <div id="upload-file" class="form-group is-empty is-fileinput"> -->
             <!-- <input type="file" multiple="" id="inputFile3">
                 <a class="btn btn-raised btn-danger" href="#"><i class="material-icons">file_upload</i> Upload sample gambar </a>
                 <span class="material-input"></span></div> -->
+            <div class="togglebutton">
+              <label>
+                CEDD
+                <input type="checkbox" checked="1" name="use_cedd"><span class="toggle"></span>
+              </label>
+            </div>
         </form>
     </div>
 </div>
@@ -52,7 +58,7 @@
             success: function(event, response) {
                 var res = response;
                 console.log(res)
-
+                $('#gallery .col-md-12').html('');
                 $("#gallery .seconds").text(res.seconds + " detik")
                 for (var i = 0; i < res.images.length; i++) {
                   var context = { image_path: res.images[i] };
